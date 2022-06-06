@@ -33,9 +33,20 @@ function App() {
   }
   return (
     <div className="App">
-      <button onClick={handleGoogleSignIn}>Google sign-in</button>
+    <h1 style={{textAlign: 'center'}}>Firebase Authentication on Google Sign in and sign Out</h1>
+      {
+        user.email ?
       <button onClick={handleGoogleSignOut}>Google sign-Out</button>
-      <p><img src={user.photoURL}></img></p>
+      :
+        <button onClick={handleGoogleSignIn}>Google sign-in</button>
+      }
+
+      {
+        user.photoURL ?
+        <p><img src={user.photoURL} alt='img'></img></p>
+        :
+        <p><small><i>User Photo</i></small></p>
+         }
       <p>User Name: {user.displayName}</p>
       <p>User Email: {user.email}</p>
     </div>
