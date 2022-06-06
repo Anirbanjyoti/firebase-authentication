@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import app from './firebase.init';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { useState } from 'react';
 
 // Initialize Firebase Authentication and get a reference to the service
@@ -9,16 +9,27 @@ const auth = getAuth(app);
 
 function App() {
   const [user, setUser] = useState({});
-  const provider = new GoogleAuthProvider();
+  // Google Provider
+  const GoogleProvider = new GoogleAuthProvider();
+  // Github Provider
+  const GithubProvider = new GithubAuthProvider();
   
   const handleGoogleSignIn= () => {
-    signInWithPopup(auth, provider)
+    signInWithPopup(auth, GoogleProvider)
     .then(result =>{
         // The signed-in user info.
         const user = result.user;
         setUser(user);
         console.log(user);
     })
+  }
+  const handleGithubSignIn =() =>{
+    signInWithPopup(auth, GithubProvider)
+      .then(result =>{
+      // The signed-in user info.
+      const user = result.user;
+      setUser(user);
+  })
   }
   const handleGoogleSignOut= () => {
     signOut(auth)
@@ -29,16 +40,18 @@ function App() {
     }).catch((error) => {
       console.log('Error', error);
     });
-    
   }
   return (
     <div className="App">
     <h1 style={{textAlign: 'center'}}>Firebase Authentication on Google Sign in and sign Out</h1>
       {
-        user.email ?
-      <button onClick={handleGoogleSignOut}>Google sign-Out</button>
-      :
+        user.uid ?
+        <button onClick={handleGoogleSignOut}>sign-Out</button>
+        :
+        <>
         <button onClick={handleGoogleSignIn}>Google sign-in</button>
+        <button onClick={handleGithubSignIn}>Github sign-in</button>
+        </>
       }
 
       {
