@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import app from './firebase.init';
-import { getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { FacebookAuthProvider, getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { useState } from 'react';
 
 // Initialize Firebase Authentication and get a reference to the service
@@ -13,6 +13,8 @@ function App() {
   const GoogleProvider = new GoogleAuthProvider();
   // Github Provider
   const GithubProvider = new GithubAuthProvider();
+  // Facebook Provider
+  const facebookProvider = new FacebookAuthProvider();
   
   const handleGoogleSignIn= () => {
     signInWithPopup(auth, GoogleProvider)
@@ -31,7 +33,38 @@ function App() {
       setUser(user);
   })
   }
-  const handleGoogleSignOut= () => {
+  const handleFacebookSignIn =() =>{
+    signInWithPopup(auth, facebookProvider)
+    .then((result) => {
+      // The signed-in user info.
+      const user = result.user;
+      setUser(user);
+      console.log(user);
+      
+  
+      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+      const credential = FacebookAuthProvider.credentialFromResult(result);
+      const accessToken = credential.accessToken;
+      console.log(accessToken);
+      
+  
+      // ...
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      
+      // The email of the user's account used.
+      // const email = error.customData.email;
+      // The AuthCredential type that was used.
+      // const credential = FacebookAuthProvider.credentialFromError(error);
+  
+      // ...
+    });
+  }
+  const handleSignOut= () => {
     signOut(auth)
     .then(() => {
       setUser({});
@@ -43,14 +76,15 @@ function App() {
   }
   return (
     <div className="App">
-    <h1 style={{textAlign: 'center'}}>Firebase Authentication on Google Sign in and sign Out</h1>
+    <h1 style={{textAlign: 'center'}}>Firebase Authentication on Google and Social Log in and Log Out</h1>
       {
         user.uid ?
-        <button onClick={handleGoogleSignOut}>sign-Out</button>
+        <button onClick={handleSignOut}>sign-Out</button>
         :
         <>
         <button onClick={handleGoogleSignIn}>Google sign-in</button>
         <button onClick={handleGithubSignIn}>Github sign-in</button>
+        <button onClick={handleFacebookSignIn}>Facebook sign-in</button>
         </>
       }
 
